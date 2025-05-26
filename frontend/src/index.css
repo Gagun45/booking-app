@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+@layer components {
+    .container {
+        @apply px-2 md:px-20
+    }
+}
