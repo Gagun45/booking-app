@@ -1,5 +1,11 @@
 @import 'tailwindcss';
 
+@layer base {
+    form {
+        @apply max-w-2xl mx-auto
+    }
+}
+
 @layer components {
     .container {
         @apply px-2 md:px-20
