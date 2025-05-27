@@ -1,10 +1,11 @@
 import { Router, type Request, type Response } from "express";
 import multer from "multer";
 import cloudinary from "cloudinary";
-import type { HotelType } from "../models/hotel";
+import type { HotelType } from "../shared/types";
 import Hotel from "../models/hotel";
 import { verifyToken } from "../middleware/auth";
 import { body } from "express-validator";
+import cuid from "cuid";
 
 const router = Router();
 
@@ -53,6 +54,7 @@ router.post(
       newHotel.imageUrls = imageUrls;
       newHotel.lastUpdated = new Date();
       newHotel.userId = req.userId;
+      newHotel.pid = cuid();
 
       const hotel = new Hotel(newHotel);
       await hotel.save();
@@ -65,5 +67,17 @@ router.post(
     }
   }
 );
+
+router.get("/", verifyToken, async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    const hotels = await Hotel.find({ userId });
+    res.json(hotels);
+    return;
+  } catch (error) {
+    console.log("Error fetching hotels: ", error);
+    res.status(500).json({ message: "Error fetching hotels" });
+  }
+});
 
 export default router;

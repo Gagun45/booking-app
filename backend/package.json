@@ -17,13 +17,15 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "cuid": "^3.0.0",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.16.0",
     "mongoose": "^8.15.0",
-    "multer": "^2.0.0"
+    "multer": "^2.0.0",
+    "nanoid": "^5.1.5"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
