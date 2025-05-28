@@ -51,13 +51,26 @@ test("should allow user to add a hotel", async ({ page }) => {
 test("should display hotels", async ({ page }) => {
   await page.goto(`${UI_URL}/my-hotels`);
 
-  await expect(page.getByText("test_name")).toBeVisible();
-  await expect(page.getByText("test_description")).toBeVisible();
-  await expect(page.getByText("test_city, test_country")).toBeVisible();
-  await expect(page.getByText("Budget")).toBeVisible();
-  await expect(page.getByText("$100 per night")).toBeVisible();
-  await expect(page.getByText("3 adults, 1 children")).toBeVisible();
-  await expect(page.getByText("3 Stars")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Add Hotel" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "View Details" })).toBeVisible();
+  await expect(page.getByText(/^test_name.*/).first()).toBeVisible();
+  await expect(page.getByText("test_description").first()).toBeVisible();
+  await expect(page.getByText("test_city, test_country").first()).toBeVisible();
+  await expect(page.getByText("Budget").first()).toBeVisible();
+  await expect(page.getByText("$100 per night").first()).toBeVisible();
+  await expect(page.getByText("3 adults, 1 children").first()).toBeVisible();
+  await expect(page.getByText("3 Stars").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Add Hotel" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "View Details" }).first()).toBeVisible();
+});
+
+test("should edit hotel", async ({ page }) => {
+  await page.goto(`${UI_URL}/my-hotels`);
+
+  await page.getByRole("link", { name: "View Details" }).first().click();
+
+  await page.waitForSelector('[name="name"]', { state: "attached" });
+
+  await expect(page.locator('[name="name"]')).toHaveValue(/^test_name.*/);
+  await page.locator('[name="name"]').fill("test_name UPDATED");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByText("Hotel saved!")).toBeVisible();
 });

@@ -4,6 +4,8 @@ import TypeSection from "./TypeSection";
 import FacilitiesSection from "./FacilitiesSection";
 import GuestsSections from "./GuestsSections";
 import ImagesSection from "./ImagesSection";
+import type { HotelType } from "../../../../backend/src/shared/types";
+import { useEffect } from "react";
 
 export type HotelFormData = {
   name: string;
@@ -17,19 +19,27 @@ export type HotelFormData = {
   childCount: number;
   starRating: number;
   imageFiles: FileList;
+  imageUrls: string[];
 };
 
 type Props = {
   onSave: (hotelFormData: FormData) => void;
   isLoading: boolean;
+  hotel?: HotelType;
 };
 
-const ManageHotelForm = ({ onSave, isLoading }: Props) => {
+const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
   const formMethods = useForm<HotelFormData>();
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, reset } = formMethods;
+  useEffect(() => {
+    reset(hotel);
+  }, [hotel, reset]);
 
   const onSubmit = handleSubmit((formDataJson: HotelFormData) => {
     const formData = new FormData();
+    if (hotel) {
+      formData.append("pid", hotel.pid);
+    }
     formData.append("name", formDataJson.name);
     formData.append("city", formDataJson.city);
     formData.append("country", formDataJson.country);
@@ -44,9 +54,16 @@ const ManageHotelForm = ({ onSave, isLoading }: Props) => {
       formData.append(`facilities[${index}]`, facility);
     });
 
-    Array.from(formDataJson.imageFiles).forEach((imageFile) => {
-      formData.append(`imageFiles`, imageFile);
-    });
+    if (formDataJson.imageFiles) {
+      Array.from(formDataJson.imageFiles).forEach((imageFile) => {
+        formData.append(`imageFiles`, imageFile);
+      });
+    }
+    if (formDataJson.imageUrls) {
+      formDataJson.imageUrls.forEach((url, index) => {
+        formData.append(`imageUrls[${index}]`, url);
+      });
+    }
     console.log(formData);
     onSave(formData);
   });
