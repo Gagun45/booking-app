@@ -1,8 +1,10 @@
 import { response, Router, type Request, type Response } from "express";
 import Hotel from "../models/hotel";
 import type { HotelSearchResponse } from "../shared/types";
+import { param, validationResult } from "express-validator";
 
 const router = Router();
+
 
 router.get("/search", async (req: Request, res: Response) => {
   try {
@@ -46,6 +48,32 @@ router.get("/search", async (req: Request, res: Response) => {
     return;
   }
 });
+
+router.get(
+  "/:pid",
+  [param("pid").notEmpty().withMessage("Hotel PID is required")],
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      res.status(400).json({ message: result.array()[0].msg });
+      return;
+    }
+    try {
+      const pid = req.params.pid;
+      const hotel = await Hotel.findOne({ pid });
+      if (!hotel) {
+        res.status(404).json({ message: "Hotel not found" });
+        return;
+      }
+      res.status(200).json(hotel);
+      return;
+    } catch (error) {
+      console.log("Search error: ", error);
+      res.status(500).json({ message: "Something went wrong" });
+      return;
+    }
+  }
+);
 
 const constructSearchQuery = (queryParams: any) => {
   const constructedQuery: any = {};
