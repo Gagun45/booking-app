@@ -62,7 +62,7 @@ const GuestInfoForm = ({ pid, pricePerNight }: Props) => {
       data.adultCount,
       data.childCount
     );
-    navigate(`/hote/${pid}/booking`);
+    navigate(`/hotel/${pid}/booking`);
   };
   return (
     <div className="flex flex-col p-4 bg-blue-200 gap-4">

@@ -25,7 +25,8 @@
     "mongodb": "^6.16.0",
     "mongoose": "^8.15.0",
     "multer": "^2.0.0",
-    "nanoid": "^5.1.5"
+    "nanoid": "^5.1.5",
+    "stripe": "^18.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

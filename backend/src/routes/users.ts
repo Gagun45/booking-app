@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import User from "../models/user";
 import jwt from "jsonwebtoken";
 import { check, validationResult } from "express-validator";
+import { verifyToken } from "../middleware/auth";
 
 const router = Router();
 
@@ -10,7 +11,7 @@ router.post(
   [
     check("firstName", "First Name is required").isString(),
     check("lastName", "Last Name is required").isString(),
-    check("email", "Email is required").isEmail().withMessage('Invalid email'),
+    check("email", "Email is required").isEmail().withMessage("Invalid email"),
     check("password", "Pass with 6 or more char required").isLength({ min: 6 }),
   ],
   async (req: Request, res: Response) => {
@@ -47,5 +48,20 @@ router.post(
     }
   }
 );
+
+router.get("/me", verifyToken, async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.userId).select("-password -_id");
+    if (!user) {
+      res.status(400).json({ message: "User not found" });
+      return;
+    }
+    res.json(user);
+    return;
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: "Something went wrong" });
+  }
+});
 
 export default router;
