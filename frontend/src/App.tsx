@@ -10,6 +10,7 @@ import Search from "./pages/Search";
 import HotelPage from "./pages/Details";
 import Booking from "./pages/Booking";
 import MyBookings from "./pages/MyBookings";
+import Home from "./pages/Home";
 
 function App() {
   const { isLoggedIn } = useAppContext();
@@ -17,6 +18,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/search" element={<Search />} />
@@ -30,7 +32,6 @@ function App() {
               <Route path="/my-bookings" element={<MyBookings />} />
             </>
           )}
-          <Route path="/" element={<p>Homepage</p>} />
           <Route path="*" element={<p>Error page</p>} />
         </Route>
       </Routes>

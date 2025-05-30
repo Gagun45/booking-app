@@ -52,6 +52,18 @@ router.get("/search", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const hotels = await Hotel.find().sort("-lastUpdated");
+    res.json(hotels);
+    return;
+  } catch (error) {
+    console.log("Fetching recent hotels error: ", error);
+    res.status(500).json({ message: "Something went wrong" });
+    return;
+  }
+});
+
 router.get(
   "/:pid",
   [param("pid").notEmpty().withMessage("Hotel PID is required")],
@@ -94,7 +106,7 @@ router.post(
       const totalCost = hotel.pricePerNight * numberOfNights;
 
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: totalCost*100,
+        amount: totalCost * 100,
         currency: "USD",
         metadata: {
           pid,
@@ -179,6 +191,7 @@ router.post(
     }
   }
 );
+
 const constructSearchQuery = (queryParams: any) => {
   const constructedQuery: any = {};
 
