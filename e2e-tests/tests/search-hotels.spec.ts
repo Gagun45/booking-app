@@ -26,7 +26,7 @@ test("should show hotel search results", async ({ page }) => {
   await page.getByRole("button", { name: "Search" }).click();
 
   await expect(page.getByText("Hotels found in test")).toBeVisible();
-  await expect(page.getByText("test_name")).toBeVisible();
+  await expect(page.getByText("test_name").first()).toBeVisible();
 });
 
 test("should show hotel details", async ({ page }) => {
@@ -70,4 +70,7 @@ test("should book hotel", async ({ page }) => {
 
   await page.getByRole("button", { name: "Confirm Booking" }).click();
   await expect(page.getByText("Booking saved")).toBeVisible();
+
+  await page.getByRole("link", { name: "My Bookings" }).click();
+  await expect(page.getByText(/^test_name.*/)).toBeVisible();
 });

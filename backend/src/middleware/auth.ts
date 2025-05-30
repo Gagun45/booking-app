@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
+import User from "../models/user";
 
 declare global {
   namespace Express {
@@ -9,7 +10,7 @@ declare global {
   }
 }
 
-export const verifyToken = (
+export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -21,6 +22,16 @@ export const verifyToken = (
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
+    if (typeof decoded == "object" && decoded.userId) {
+      const user = await User.findById(decoded.userId);
+      if (!user) {
+        res.status(401).json({ message: "Invalid token" });
+        return;
+      }
+    } else {
+      res.status(401).json({ message: "Invalid token" });
+      return;
+    }
     req.userId = (decoded as JwtPayload).userId;
     next();
   } catch (error) {
